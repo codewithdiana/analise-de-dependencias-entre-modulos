@@ -9,9 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# =========================
-# 🎨 Estilo da Interface
-# =========================
+# Estilo da Interface
 st.markdown("""
 <style>
 
@@ -79,10 +77,8 @@ header {
 </style>
 """, unsafe_allow_html=True)
 
-# =========================
-# 🏷️ Sidebar
-# =========================
-st.sidebar.markdown("# 🔍 Analyzer")
+# Sidebar
+st.sidebar.markdown("# Analyzer")
 
 st.sidebar.markdown("""
 Sistema de análise de dependências entre módulos Python.
@@ -93,14 +89,8 @@ Detecta:
 - ordenação topológica
 """)
 
-# =========================
-# 🏷️ Título
-# =========================
 st.title("Análise de Dependências entre Módulos")
 
-# =========================
-# 📂 Upload JSON
-# =========================
 uploaded_file = st.file_uploader(
     "Envie um arquivo JSON",
     type=["json"]
@@ -109,9 +99,6 @@ uploaded_file = st.file_uploader(
 graph = None
 service = None
 
-# =========================
-# 📂 Carregamento
-# =========================
 if uploaded_file:
 
     data = json.load(uploaded_file)
@@ -128,9 +115,6 @@ if uploaded_file:
 
     st.success("Projeto carregado!")
 
-# =========================
-# 🧩 Abas
-# =========================
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Grafo",
     "Ciclos",
@@ -139,9 +123,6 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Sobre"
 ])
 
-# =========================
-# 📊 GRAFO
-# =========================
 with tab1:
 
     st.header("Visualização do Grafo")
@@ -157,9 +138,6 @@ with tab1:
     else:
         st.warning("Carregue um projeto primeiro.")
 
-# =========================
-# 🔄 CICLOS
-# =========================
 with tab2:
 
     st.header("Detecção de Ciclos")
@@ -184,9 +162,6 @@ with tab2:
     else:
         st.warning("Carregue um projeto primeiro.")
 
-# =========================
-# 📈 ORDENAÇÃO
-# =========================
 with tab3:
 
     st.header("Ordenação Topológica")
@@ -209,9 +184,6 @@ with tab3:
     else:
         st.warning("Carregue um projeto primeiro.")
 
-# =========================
-# 🎯 IMPACTO
-# =========================
 with tab4:
 
     st.header("Análise de Impacto")
@@ -250,12 +222,6 @@ with tab4:
     else:
         st.warning("Carregue um projeto primeiro.")
 
-# =========================
-# ℹ️ SOBRE
-# =========================
-# =========================
-# ℹ️ SOBRE
-# =========================
 with tab5:
 
     st.header("Sobre o Projeto")
@@ -263,7 +229,7 @@ with tab5:
     st.markdown("""
 ### Objetivo
 
-Este sistema analisa dependências entre módulos Python.
+Este sistema analisa dependências entre módulos em Python.
 
 Ele permite:
 - detectar ciclos
