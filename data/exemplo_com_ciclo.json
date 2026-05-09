@@ -1,0 +1,14 @@
+{
+  "modulos": [
+    "module_a.py",
+    "module_b.py",
+    "module_c.py",
+    "module_d.py"
+  ],
+  "dependencias": [
+    { "origem": "module_a.py", "destino": "module_b.py" },
+    { "origem": "module_b.py", "destino": "module_c.py" },
+    { "origem": "module_c.py", "destino": "module_a.py" },
+    { "origem": "module_d.py", "destino": "module_b.py" }
+  ]
+}
