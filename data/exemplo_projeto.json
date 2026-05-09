@@ -1,0 +1,40 @@
+{
+  "modulos": [
+    "main.py",
+    "auth/login.py",
+    "auth/token.py",
+    "database/connection.py",
+    "database/query.py",
+    "utils/logger.py"
+  ],
+  "dependencias": [
+    {
+      "origem": "main.py",
+      "destino": "auth/login.py"
+    },
+    {
+      "origem": "main.py",
+      "destino": "database/connection.py"
+    },
+    {
+      "origem": "auth/login.py",
+      "destino": "auth/token.py"
+    },
+    {
+      "origem": "auth/login.py",
+      "destino": "database/connection.py"
+    },
+    {
+      "origem": "auth/token.py",
+      "destino": "utils/logger.py"
+    },
+    {
+      "origem": "database/query.py",
+      "destino": "database/connection.py"
+    },
+    {
+      "origem": "database/connection.py",
+      "destino": "utils/logger.py"
+    }
+  ]
+}
