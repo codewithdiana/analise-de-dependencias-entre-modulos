@@ -34,32 +34,32 @@ class TestKahn:
 
     def testar_ordem_DAG_valida(self, grafo_aciclico):
         result = ordenacao_topologica(grafo_aciclico)
-        assert result["success"] is True
-        order = result["order"]
-        assert order.index("A") < order.index("B")
-        assert order.index("A") < order.index("C")
-        assert order.index("B") < order.index("D")
-        assert order.index("C") < order.index("D")
+        assert result["successo"] is True
+        ordem = result["ordem"]
+        assert ordem.index("A") < ordem.index("B")
+        assert ordem.index("A") < ordem.index("C")
+        assert ordem.index("B") < ordem.index("D")
+        assert ordem.index("C") < ordem.index("D")
 
     def testar_falha_por_ciclo(self, grafo_ciclico):
         result = ordenacao_topologica(grafo_ciclico)
-        assert result["success"] is False
-        assert len(result["unprocessed"]) > 0
+        assert result["successo"] is False
+        assert len(result["nao_processados"]) > 0
 
     def testar_grafo_vazio(self):
         g = Grafo()
         result = ordenacao_topologica(g)
-        assert result["success"] is True
-        assert result["order"] == []
+        assert result["successo"] is True
+        assert result["ordem"] == []
 
     def testar_grafo_desconexo(self):
         g = Grafo()
         g.adicionar_aresta("A", "B")
         g.adicionar_aresta("C", "D")
         result = ordenacao_topologica(g)
-        assert result["success"] is True
-        assert len(result["order"]) == 4
+        assert result["successo"] is True
+        assert len(result["ordem"]) == 4
 
     def testar_todos_vertices_na_ordem(self, grafo_aciclico):
         result = ordenacao_topologica(grafo_aciclico)
-        assert set(result["order"]) == set(grafo_aciclico.obter_vertices())
+        assert set(result["ordem"]) == set(grafo_aciclico.obter_vertices())
