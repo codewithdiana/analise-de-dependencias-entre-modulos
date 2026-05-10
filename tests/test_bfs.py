@@ -26,22 +26,22 @@ class TestarBFS:
 
     def testar_cenario_padrao(self, grafo_aciclico):
         resultado = calcular_cone_impacto(grafo_aciclico, "A")
-        assert set(resultado["impacted"]) == {"B", "C", "D"}
+        assert set(resultado["impactados"]) == {"B", "C", "D"}
 
     def testar_modulo_folha(self, grafo_aciclico):
         resultado = calcular_cone_impacto(grafo_aciclico, "D")
-        assert resultado["impacted"] == []
+        assert resultado["impactados"] == []
 
     def testar_grafo_vazio(self):
         g = Grafo()
         resultado = calcular_cone_impacto(g, "X")
-        assert resultado["impacted"] == []
+        assert resultado["impactados"] == []
 
     def testar_camadas_de_impacto(self, grafo_aciclico):
         resultado = calcular_cone_impacto(grafo_aciclico, "A")
-        assert set(resultado["layers"][0]) == {"B", "C"}
-        assert set(resultado["layers"][1]) == {"D"}
+        assert set(resultado["camadas"][0]) == {"B", "C"}
+        assert set(resultado["camadas"][1]) == {"D"}
 
     def testar_modulo_inexistente(self, grafo_aciclico):
         resultado = calcular_cone_impacto(grafo_aciclico, "Z")
-        assert resultado["impacted"] == []
+        assert resultado["impactados"] == []
