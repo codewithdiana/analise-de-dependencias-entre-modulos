@@ -1,4 +1,4 @@
-# Grafos - DGJ
+# Grafos - Grupo1
 
 Estrutura de análise de dependências usando grafos.
 
