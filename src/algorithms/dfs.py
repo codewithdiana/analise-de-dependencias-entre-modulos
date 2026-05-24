@@ -11,7 +11,6 @@ BRANCO = "branco"   # não visitado
 CINZA  = "cinza"    # em processamento (na pilha de recursão)
 PRETO = "preto"   # processamento concluído
 
-
 def detectar_ciclos(grafo) -> dict:
     """
     Executa DFS com coloração em todos os vértices do grafo.
@@ -23,24 +22,22 @@ def detectar_ciclos(grafo) -> dict:
     Complexidade: O(V + E)
     """
     cores = {v: BRANCO for v in grafo.obter_vertices()}   # O(V)
-    pais = {v: None for v in grafo.obter_vertices()}   # O(V)
     ciclos = []
 
     def visitar_dfs(vertice, caminho):
         cores[vertice] = CINZA          # marca como em processamento
         caminho.append(vertice)
 
-        for vizinhos in grafo.obter_vizinhos(vertice):   # O(grau(vertex))
-            if cores[vizinhos] == CINZA:
+        for vizinho in grafo.obter_vizinhos(vertice):   # O(grau(vertex))
+            if cores[vizinho] == CINZA:
                 # Aresta de retorno encontrada → ciclo detectado
                 # Reconstruir o caminho do ciclo a partir de 'path'
-                ciclo_inicial = caminho.index(vizinhos)
-                ciclo = caminho[ciclo_inicial:] + [vizinhos]
+                ciclo_inicial = caminho.index(vizinho)
+                ciclo = caminho[ciclo_inicial:] + [vizinho]
                 ciclos.append(ciclo)
 
-            elif cores[vizinhos] == BRANCO:
-                pais[vizinhos] = vertice
-                visitar_dfs(vizinhos, caminho)
+            elif cores[vizinho] == BRANCO:
+                visitar_dfs(vizinho, caminho)
 
         caminho.pop()
         cores[vertice] = PRETO         # processamento concluído
