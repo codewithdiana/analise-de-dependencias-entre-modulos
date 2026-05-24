@@ -1,143 +1,147 @@
 """
 Módulo: visualizer.py
-Responsabilidade: gerar visualização gráfica do grafo de dependências,
-com destaque visual para ciclos (vermelho) e cone de impacto (laranja).
+
+Responsabilidade:
+Gerar visualização INTERATIVA do grafo de dependências,
+com suporte a:
+- zoom
+- hover
+- drag
+- responsividade
+- dark mode
+- destaque para ciclos (vermelho)
+- destaque para cone de impacto (laranja)
+- destaque para módulo em foco (azul claro maior)
 """
 
-import networkx as nx
-import matplotlib.pyplot as plt
+import os
+import tempfile
+from pyvis.network import Network
 
-
-def desenhar_grafo(
+def desenhar_grafo_interativo(
     graph,
     ciclos: list = None,
     impacto: list = None,
-    title: str = "Grafo de Dependências"
-):
+    modulo_foco: str = None
+) -> str:
+    """
+    Gera o código HTML de um grafo interativo usando pyvis.
+    Retorna a string HTML para ser injetada no Streamlit.
+    """
     ciclos = ciclos or []
-    impacto = impacto or []
+    impacto_set = set(impacto or [])
 
-    # ── Construção do grafo ───────────────────────────────
-    G = nx.DiGraph()
-    G.add_nodes_from(graph.obter_vertices())
-    G.add_edges_from(graph.obter_arestas())
-
-    pos = nx.spring_layout(
-        G,
-        seed=42,
-        k=1.2,
-        iterations=100
-)
-
-    # ── Classificação de arestas ──────────────────────────
-    arestas_do_ciclo = set()
+    # Mapeia vértices e arestas que fazem parte de um ciclo
+    vertices_ciclo = set()
+    arestas_ciclo = set()
     for ciclo in ciclos:
+        vertices_ciclo.update(ciclo)
         for i in range(len(ciclo) - 1):
-            arestas_do_ciclo.add((ciclo[i], ciclo[i + 1]))
+            arestas_ciclo.add((ciclo[i], ciclo[i+1]))
 
-    conjunto_de_impacto = set(impacto)
-
-    arestas_impactadas = set()
-    for origem, destino in graph.obter_arestas():
-        if destino in conjunto_de_impacto:
-            arestas_impactadas.add((origem, destino))
-
-    arestas_normais = [
-        e for e in G.edges()
-        if e not in arestas_do_ciclo and e not in arestas_impactadas
-    ]
-
-    # ── Classificação de nós ──────────────────────────────
-    vertices_do_ciclo = set()
-    for ciclo in ciclos:
-        vertices_do_ciclo.update(ciclo)
-
-    nos_normais = [
-        v for v in G.nodes()
-        if v not in vertices_do_ciclo and v not in conjunto_de_impacto
-    ]
-
-    # ── Desenho ──────────────────────────────────────────
-    fig, ax = plt.subplots(figsize=(9, 6))
-
-    fig.patch.set_facecolor("#0E1117")
-    ax.set_facecolor("#0E1117")
-    ax.set_title(title, fontsize=14, fontweight="bold", pad=20)
-
-    # Nós normais
-    nx.draw_networkx_nodes(
-        G, pos, nodelist=nos_normais,
-        node_color="#AED6F1", node_size=1800, ax=ax
+    # Configuração base da rede
+    net = Network(
+        height="600px", 
+        width="100%", 
+        bgcolor="#0E1117", 
+        font_color="white", 
+        directed=True
     )
 
-    # Nós em ciclo
-    if vertices_do_ciclo:
-        nx.draw_networkx_labels(
-            G,
-            pos,
-            font_size=8,
-            font_weight="bold",
-            font_color="white",
-            ax=ax
-)
+    # ──────────────────────────────────────────
+    # NÓS (VÉRTICES)
+    # ──────────────────────────────────────────
+    todas_arestas = graph.obter_arestas()
 
-    # Nós impactados
-    if conjunto_de_impacto:
-        nx.draw_networkx_nodes(
-            G, pos, nodelist=list(conjunto_de_impacto),
-            node_color="#F39C12", node_size=1800, ax=ax
+    for v in graph.obter_vertices():
+        # Lógica de cores e tamanhos (igual estava no app.py)
+        if v in vertices_ciclo:
+            color = "#E74C3C"  # Vermelho para ciclos
+            size = 18
+        elif v in impacto_set:
+            color = "#F39C12"  # Laranja para impacto
+            size = 18
+        elif v == modulo_foco:
+            color = "#58A6FF"  # Azul forte/maior para o módulo selecionado
+            size = 25
+        else:
+            color = "#AED6F1"  # Azul claro padrão
+            size = 18
+
+        # Monta o Tooltip (Hover)
+        vizinhos_saida = graph.obter_vizinhos(v)
+        vizinhos_entrada = [o for o, d in todas_arestas if d == v]
+        tooltip = (
+            f"📦 {v}\n"
+            f"→ Importa: {', '.join(vizinhos_saida) if vizinhos_saida else 'nenhum'}\n"
+            f"← Importado por: {', '.join(vizinhos_entrada) if vizinhos_entrada else 'nenhum'}"
+        )
+        
+        # O nome curto no nó visual (para não poluir a tela)
+        label_curto = v.split("/")[-1]
+
+        net.add_node(
+            v, 
+            label=label_curto, 
+            title=tooltip, 
+            color=color, 
+            size=size
         )
 
-    # Arestas normais
-    nx.draw_networkx_edges(
-        G, pos, edgelist=arestas_normais,
-        edge_color="#888888", arrows=True,
-        arrowsize=20, width=1.5,
-        connectionstyle="arc3,rad=0.1", ax=ax
-    )
+    # ──────────────────────────────────────────
+    # ARESTAS (DEPENDÊNCIAS)
+    # ──────────────────────────────────────────
+    for origem, destino in todas_arestas:
+        if (origem, destino) in arestas_ciclo:
+            cor_aresta = "#E74C3C"
+            largura = 3
+        elif destino in impacto_set:
+            cor_aresta = "#F39C12"
+            largura = 2
+        else:
+            cor_aresta = "#555555"
+            largura = 1.5
 
-    # Arestas de ciclo
-    if arestas_do_ciclo:
-        nx.draw_networkx_edges(
-            G, pos, edgelist=list(arestas_do_ciclo),
-            edge_color="#E74C3C", arrows=True,
-            arrowsize=25, width=2.5,
-            connectionstyle="arc3,rad=0.1", ax=ax
+        net.add_edge(
+            origem, 
+            destino, 
+            color=cor_aresta, 
+            width=largura
         )
 
-    # Arestas de impacto
-    if arestas_impactadas:
-        nx.draw_networkx_edges(
-            G, pos, edgelist=list(arestas_impactadas),
-            edge_color="#F39C12", arrows=True,
-            arrowsize=25, width=2.5,
-            connectionstyle="arc3,rad=0.1", ax=ax
-        )
+    net.set_options("""
+    {
+      "nodes": { 
+          "font": { "size": 13, "color": "white" }, 
+          "borderWidth": 2 
+      },
+      "edges": { 
+          "arrows": { "to": { "enabled": true, "scaleFactor": 0.8 } }, 
+          "smooth": { "type": "curvedCW", "roundness": 0.1 } 
+      },
+      "physics": { 
+          "enabled": true, 
+          "solver": "forceAtlas2Based", 
+          "stabilization": { "iterations": 150 } 
+      },
+      "interaction": { 
+          "hover": true, 
+          "tooltipDelay": 100 
+      }
+    }
+    """)
 
-    # Labels
-    nx.draw_networkx_labels(G, pos, font_size=8, font_weight="bold", ax=ax)
+    # ── GERA HTML E LIMPA MEMÓRIA/DISCO ────────────────────────────────────────────
+    arquivo_temporario = tempfile.NamedTemporaryFile(delete=False, suffix=".html")
+    net.save_graph(arquivo_temporario.name)
 
-    # ── Legenda ──────────────────────────────────────────
-    legend_elements = [
-        plt.Line2D([0], [0], marker="o", color="w",
-                   markerfacecolor="#AED6F1", markersize=12, label="Módulo normal"),
-    ]
+    with open(arquivo_temporario.name, "r", encoding="utf-8") as f:
+        html_content = f.read()
 
-    if vertices_do_ciclo:
-        legend_elements.append(
-            plt.Line2D([0], [0], marker="o", color="w",
-                       markerfacecolor="#E74C3C", markersize=12, label="Ciclo")
-        )
+    # ── Apaga o arquivo físico para não estourar o disco ────────────────────────────────────────────
+    try:
+        os.unlink(arquivo_temporario.name)
+    except Exception:
+        pass
 
-    if conjunto_de_impacto:
-        legend_elements.append(
-            plt.Line2D([0], [0], marker="o", color="w",
-                       markerfacecolor="#F39C12", markersize=12, label="Impacto")
-        )
-
-    ax.legend(handles=legend_elements, loc="upper left", fontsize=9)
-    ax.axis("off")
-
-    plt.tight_layout()
-
-    return fig
+    return html_content
