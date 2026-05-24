@@ -1,4 +1,4 @@
-##  Analisador de Dependências
+## Analisador de Dependências
 
 Uma ferramenta interativa construída em Python e Streamlit para mapear, visualizar e analisar as dependências internas de projetos.
 
@@ -20,14 +20,14 @@ Utilizando **Teoria dos Grafos** e **Análise Estática de Código (AST)**, o si
 - **Inteligência Artificial:** Groq API (LLaMA-3.3-70b)
 - **Algoritmos Core:** DFS (Depth-First Search), BFS (Breadth-First Search) e Algoritmo de Kahn.
 
-## Como Executar o Projeto
+### Como Executar o Projeto
 
-# Pré-requisitos
+### Pré-requisitos
 
 - Python 3.8 ou superior instalado.
 - Uma chave de API gratuita do [Groq](https://console.groq.com/) (opcional, apenas para os recursos de IA).
 
-# Passo a Passo
+### Passo a Passo
 
 1. **Clone o repositório:**
 
@@ -40,10 +40,10 @@ cd local/analise-de-dependencias-entre-modulos
 
 python -m venv .venv
 
-# Windows
+Windows
 .venv\Scripts\activate
 
-# Linux/Mac
+Linux/Mac
 source .venv/bin/activate
 
 3. **Instale as dependências:**
