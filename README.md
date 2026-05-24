@@ -51,8 +51,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**4. Configure a chave da IA (Opcional): Em um arquivo .env, insira sua chave da API do Groq na variável GROQ_API_KEY.
-**
+Configure a chave da IA (Opcional): Em um arquivo .env, insira sua chave da API do Groq na variável GROQ_API_KEY.
 
 **5. Execute a aplicação:**
 ```bash
