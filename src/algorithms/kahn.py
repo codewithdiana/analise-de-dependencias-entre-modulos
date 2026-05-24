@@ -10,7 +10,6 @@ Complexidade de espaço: O(V + E) — fila + array de graus de entrada
 
 from collections import deque
 
-
 def ordenacao_topologica(grafo) -> dict:
     """
     Executa o algoritmo de Kahn sobre o grafo.
@@ -37,16 +36,16 @@ def ordenacao_topologica(grafo) -> dict:
         vertice = fila.popleft()
         ordem.append(vertice)
 
-        for vizinhos in grafo.obter_vizinhos(vertice):   # O(E) no total
-            grau_de_entrada[vizinhos] -= 1
-            if grau_de_entrada[vizinhos] == 0:
-                fila.append(vizinhos)
+        for vizinho in grafo.obter_vizinhos(vertice):   # O(E) no total
+            grau_de_entrada[vizinho] -= 1
+            if grau_de_entrada[vizinho] == 0:
+                fila.append(vizinho)
 
     # Se nem todos os vértices foram processados → há ciclo
     nao_processados = [v for v in vertices if v not in ordem]
 
     return {
-        "successo": len(ordem) == len(vertices),
+        "sucesso": len(ordem) == len(vertices),
         "ordem": ordem,
         "nao_processados": nao_processados
     }
