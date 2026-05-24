@@ -1,16 +1,16 @@
 """
 Módulo: dependency_service.py
-Responsabilidade: orquestrar os fluxos do sistema.
+Responsabilidade: orquestrar os fluxos do sistema (Padrão Facade).
 """
 
+from src.core.grafo import Grafo
 from src.algorithms.dfs import detectar_ciclos
 from src.algorithms.kahn import ordenacao_topologica
 from src.algorithms.bfs import calcular_cone_impacto
 
-
 class DependencyService:
 
-    def __init__(self, graph):
+    def __init__(self, graph: Grafo):
         self.graph = graph
 
     def detectar_ciclos(self) -> dict:
@@ -24,7 +24,7 @@ class DependencyService:
 
     def obter_resumo(self) -> dict:
         return {
-            "vertices": len(self.graph.obter_vertices()),
-            "edges": len(self.graph.obter_arestas()),
-            "modules": self.graph.obter_vertices()
+            "total_vertices": len(self.graph.obter_vertices()),
+            "total_arestas": len(self.graph.obter_arestas()),
+            "lista_modulos": self.graph.obter_vertices()
         }
