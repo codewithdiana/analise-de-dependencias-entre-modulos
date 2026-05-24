@@ -1,17 +1,14 @@
 """
 Módulo: main.py
-Responsabilidade: ponto de entrada do sistema.
+Responsabilidade: Lançador do servidor Streamlit.
 """
-
-from src.core.grafo import Grafo
-from src.service.dependency_service import DependencyService
-
+import subprocess
+import sys
 
 def main():
-    print("Projeto executado pela interface Streamlit.")
-    print("Use o comando:")
-    print("python -m streamlit run ui/app.py")
-
+    print("🚀 Iniciando a interface web do DepGraph...")
+    # Executa o comando do Streamlit automaticamente
+    subprocess.run([sys.executable, "-m", "streamlit", "run", "ui/app.py"])
 
 if __name__ == "__main__":
     main()
