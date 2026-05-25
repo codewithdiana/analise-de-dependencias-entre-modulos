@@ -30,7 +30,7 @@ def section_title(icon_url, title):
     )
 
 load_dotenv()
-# Puxa a chave do groq
+# Chave do groq
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 if not GROQ_API_KEY:
@@ -467,7 +467,7 @@ with tabs[0]:
                 components.html(html_grafo, height=615, scrolling=False)
                 st.caption("Passe o mouse sobre um nó para ver suas dependências.")
 
-        if st.session_state.modulo_selecionado:
+if st.session_state.modulo_selecionado:
             st.markdown("---")
             exibir_detalhes_modulo(st.session_state.modulo_selecionado)
             if st.button("Analisar este módulo com IA", key="ia_modulo"):
@@ -475,7 +475,8 @@ with tabs[0]:
                     mod = st.session_state.modulo_selecionado
                     importa       = st.session_state.graph.obter_vizinhos(mod)
                     importado_por = [o for o, d in st.session_state.graph.obter_arestas() if d == mod]
-prompt = (
+                    
+                    prompt = (
                         f'Você é um especialista em engenharia de software.\n'
                         f'Analise o módulo "{mod}" e explique em português:\n'
                         f'1. O papel deste módulo no sistema.\n'
@@ -486,10 +487,10 @@ prompt = (
                     )
                     renderizar_resposta_ia(explicar_com_ia(prompt))
 
-        st.markdown("---")
-        if st.button("Explicar grafo completo com IA", key="ia_grafo"):
-            with st.spinner("Analisando o grafo..."):
-                prompt = (
+            st.markdown("---")
+            if st.button("Explicar grafo completo com IA", key="ia_grafo"):
+                with st.spinner("Analisando o grafo..."):
+                    prompt = (
                     'Analise o grafo de dependências e explique em português:\n'
                     '1. Quais módulos dependem de quais.\n'
                     '2. Quais são os mais críticos (mais importados).\n'
@@ -498,8 +499,8 @@ prompt = (
                     f'{montar_contexto_grafo()}'
                 )
                 renderizar_resposta_ia(explicar_com_ia(prompt))
-    else:
-        st.markdown(
+            else:
+                st.markdown(
             '<div class="upload-prompt">'
             '<img src="https://img.icons8.com/ios/100/30363D/hexagon.png"/>'
             '<p class="upload-prompt-text">Carregue um arquivo para visualizar o grafo</p>'
