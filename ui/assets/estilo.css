@@ -1,25 +1,33 @@
-/* Módulo: main.css
-Responsabilidade: Estilização
-*/
+/* =====================================================================
+   Módulo: estilo.css
+   Responsabilidade: Estilização Global da Interface (Streamlit)
+===================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
 
+/* ── CONFIGURAÇÕES GERAIS DA PÁGINA ──────────────────────── */
 .stApp {
     background-color: #0E1117;
     color: #E0E0E0;
     font-family: 'Inter', sans-serif;
 }
 
-#MainMenu {
-    visibility: hidden;
+/* Ocultar menu padrão do Streamlit */
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+
+/* Margens da página */
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
-footer {
-    visibility: hidden;
-}
 
-[data-testid="stSidebar"] {
-    background-color: #161B22;
+/* ── MENU LATERAL (SIDEBAR) ──────────────────────────────── */
+[data-testid="stSidebar"], section[data-testid="stSidebar"] {
+    background-color: #111827;
     border-right: 1px solid #30363D;
 }
 
@@ -31,40 +39,8 @@ footer {
     margin-bottom: 0.5rem;
 }
 
-.stTabs [data-baseweb="tab-list"] {
-    gap: 10px;
-    background-color: transparent;
-}
 
-.stTabs [data-baseweb="tab"] {
-    height: 45px;
-    background-color: #21262D;
-    border-radius: 6px 6px 0px 0px;
-    color: #8B949E;
-    padding: 0px 20px;
-    border: 1px solid #30363D;
-    border-bottom: none;
-}
-
-.stTabs [aria-selected="true"] {
-    background-color: #161B22;
-    color: #58A6FF;
-    border-bottom: 2px solid #58A6FF;
-}
-
-.stButton > button {
-    width: 100%;
-    border-radius: 6px;
-    background-color: #21262D;
-    color: #C9D1D9;
-    border: 1px solid #30363D;
-}
-
-.stButton > button:hover {
-    border-color: #8B949E;
-    color: #FFFFFF;
-}
-
+/* ── CABEÇALHO (HEADER) ──────────────────────────────────── */
 .header-card {
     background-color: #161B22;
     padding: 1.5rem;
@@ -89,48 +65,6 @@ footer {
     font-size: 0.9rem;
 }
 
-.block-container {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-}
-
-section[data-testid="stSidebar"] {
-    background-color: #111827;
-}
-
-.stTabs [data-baseweb="tab"] {
-    background-color: #1E1E1E;
-    border-radius: 10px;
-    padding: 10px 18px;
-    color: white;
-}
-
-.stButton button {
-    border-radius: 10px;
-    width: 100%;
-    font-weight: bold;
-}
-
-/* Estilos para a seção de dependências */
-.dep-import-box {
-    margin-top: 0.5rem;
-}
-
-.dep-imported-box {
-    margin-top: 0.8rem;
-}
-
-.text-import {
-    color: #58A6FF;
-}
-
-.text-imported {
-    color: #F39C12;
-}
-
-/* Estilo para a descrição ao lado do título principal */
 .header-description {
     font-size: 1rem;
     color: #8B949E;
@@ -138,7 +72,49 @@ section[data-testid="stSidebar"] {
     margin-left: 10px;
 }
 
-/* Estilos para o estado vazio (sem arquivo carregado) */
+
+/* ── ABAS SUPERIORES (TABS) ──────────────────────────────── */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 10px;
+    background-color: transparent;
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 45px;
+    background-color: #1E1E1E;
+    border-radius: 6px 6px 0px 0px;
+    color: #8B949E;
+    padding: 10px 20px;
+    border: 1px solid #30363D;
+    border-bottom: none;
+    transition: all 0.2s;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #161B22;
+    color: #58A6FF;
+    border-bottom: 2px solid #58A6FF;
+}
+
+
+/* ── BOTÕES GERAIS ───────────────────────────────────────── */
+.stButton > button {
+    width: 100%;
+    border-radius: 6px;
+    background-color: #21262D;
+    color: #C9D1D9;
+    border: 1px solid #30363D;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.stButton > button:hover {
+    border-color: #8B949E;
+    color: #FFFFFF;
+}
+
+
+/* ── TELA DE UPLOAD (ESTADO VAZIO) ───────────────────────── */
 .upload-prompt {
     display: flex;
     flex-direction: column;
@@ -152,7 +128,34 @@ section[data-testid="stSidebar"] {
     margin-top: 20px;
 }
 
-/* ── CARDS DE ORDENAÇÃO E IMPACTO ── */
+
+/* ── DETALHES DO GRAFO (ABA 0) ───────────────────────────── */
+.dep-card {
+    background-color: #161B22;
+    border: 1px solid #30363D;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+}
+
+.dep-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #E6EDF3;
+    border-bottom: 1px solid #30363D;
+    padding-bottom: 8px;
+}
+
+.dep-import-box { margin-top: 0.5rem; }
+.dep-imported-box { margin-top: 0.8rem; }
+
+.text-import { color: #58A6FF; }  /* Azul */
+.text-imported { color: #2EA043; } /* Verde */
+
+
+/* ── CARDS DE ORDENAÇÃO E IMPACTO (ABAS 2 E 3) ───────────── */
 .ordem-card {
     padding: 8px 15px; 
     margin-bottom: 8px; 
@@ -161,7 +164,7 @@ section[data-testid="stSidebar"] {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-family: monospace;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 /* Modificadores de Status (Borda) */
@@ -169,19 +172,12 @@ section[data-testid="stSidebar"] {
 .ordem-card.erro { border-left: 4px solid #F85149; }
 
 /* Índice ou Ícone (Número ou ⛔) */
-.ordem-idx {
-    font-weight: bold; 
-    min-width: 20px;
-}
+.ordem-idx { font-weight: bold; min-width: 20px; }
 .ordem-card.ok .ordem-idx { color: #2EA043; }
 .ordem-card.erro .ordem-idx { color: #F85149; }
 
 /* Textos (Caminho da pasta e nome do arquivo) */
-.ordem-pasta {
-    color: #8B949E; 
-    font-size: 0.85em;
-}
-
+.ordem-pasta { color: #8B949E; font-size: 0.85em; }
 .ordem-arquivo { font-weight: bold; }
 .ordem-card.ok .ordem-arquivo { color: #E6EDF3; }
 .ordem-card.erro .ordem-arquivo { color: #F85149; }
