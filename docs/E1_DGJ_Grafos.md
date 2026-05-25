@@ -45,7 +45,7 @@ Desenvolver um sistema em Python capaz de receber como entrada a estrutura de m�
 > Desmembre o objetivo geral em metas mensuráveis.  
 > *Orientação: liste entre 3 e 5 itens. Cada item deve ser verificável — use verbos como "implementar", "calcular", "exibir", "carregar".*
 
-- [x] **Construir o grafo de dependências:** o sistema deve ler a estrutura de um projeto Python — via arquivo de entrada estruturado (JSON ou CSV) como simplificação declarada do escopo — e construir um grafo dirigido representado internamente como lista de adjacência.  (uma forma eficiente de guardar quais módulos importam quais outros). 
+- [x] **Construir o grafo de dependências:** o sistema deve ler automaticamente a estrutura de um projeto Python a partir de arquivos compactados (.zip) contendo o código-fonte, identificar as relações de importação entre módulos .py e construir um grafo dirigido representado internamente como lista de adjacência (uma forma eficiente de armazenar quais módulos dependem de outros).
 - [x] **Detectar ciclos de dependência** utilizando DFS com coloração de vértices (branco/cinza/preto), reportando cada ciclo encontrado com o caminho completo.
 - [x] **Gerar a ordenação topológica** dos módulos (quando o grafo for acíclico) utilizando o algoritmo de Kahn, com tratamento explícito de grafos desconexos — cada componente será processado independentemente, garantindo cobertura completa.
 - [x] **Calcular o cone de impacto** de um módulo: dado um vértice de entrada, retornar todos os módulos alcançáveis que precisariam ser revalidados após uma mudança.
