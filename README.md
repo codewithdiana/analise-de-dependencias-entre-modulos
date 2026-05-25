@@ -12,6 +12,12 @@ Utilizando Teoria dos Grafos e Análise Estática de Código (AST), o sistema pr
 * Avaliação de raio de impacto de modificações através de Busca em Largura (BFS) reversa.
 * Geração automatizada de relatórios e explicações de arquitetura via LLM (Integração Groq/LLaMA 3).
 
+
+## Demonstração
+
+Entenda como o projeto funciona na prática através de uma análise visual:
+[🎥 Assista ao vídeo de demonstração no YouTube]([https://www.youtube.com/watch?v=ID_DO_SEU_VIDEO](https://youtu.be/E-1emplTEzY?si=rdykZwUP_EY4WikG))
+
 ## Tecnologias Utilizadas
 
 * **Linguagem:** Python
