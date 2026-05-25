@@ -12,10 +12,22 @@ if _ROOT not in sys.path:
 from src.core.grafo import Grafo
 from src.service.dependency_service import DependencyService
 from src.io.visualizer import desenhar_grafo_interativo
-from ui.assets.icons import *
 from dotenv import load_dotenv
 from pathlib import Path
 import streamlit.components.v1 as components
+
+GRAPH_ICON = "https://img.icons8.com/fluency-systems-filled/24/58A6FF/combo-chart.png"
+CYCLE_ICON = "https://img.icons8.com/fluency-systems-filled/24/58A6FF/refresh.png"
+ORDER_ICON = "https://img.icons8.com/fluency-systems-filled/24/58A6FF/sorting-arrows-horizontal.png"
+IMPACT_ICON = "https://img.icons8.com/fluency-systems-filled/24/58A6FF/high-importance.png"
+
+def section_title(icon_url, title):
+    return (
+        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">'
+        f'<img src="{icon_url}" width="22">'
+        f'<h3 style="margin:0; color:white;">{title}</h3>'
+        '</div>'
+    )
 
 load_dotenv()
 # Puxa a chave do groq
@@ -463,32 +475,37 @@ with tabs[0]:
                     mod = st.session_state.modulo_selecionado
                     importa       = st.session_state.graph.obter_vizinhos(mod)
                     importado_por = [o for o, d in st.session_state.graph.obter_arestas() if d == mod]
-                    prompt = f"""Você é um especialista em engenharia de software.
-Analise o módulo "{mod}" e explique em português:
-1. O papel deste módulo no sistema.
-2. Por que ele importa: {importa if importa else 'nenhum módulo interno'}.
-3. Quem depende dele ({importado_por if importado_por else 'ninguém'}) e o impacto disso.
-4. Risco se for modificado ou removido.
-Contexto: {montar_contexto_grafo()}"""
+prompt = (
+                        f'Você é um especialista em engenharia de software.\n'
+                        f'Analise o módulo "{mod}" e explique em português:\n'
+                        f'1. O papel deste módulo no sistema.\n'
+                        f'2. Por que ele importa: {importa if importa else "nenhum módulo interno"}.\n'
+                        f'3. Quem depende dele ({importado_por if importado_por else "ninguém"}) e o impacto disso.\n'
+                        f'4. Risco se for modificado ou removido.\n'
+                        f'Contexto: {montar_contexto_grafo()}'
+                    )
                     renderizar_resposta_ia(explicar_com_ia(prompt))
 
         st.markdown("---")
         if st.button("Explicar grafo completo com IA", key="ia_grafo"):
             with st.spinner("Analisando o grafo..."):
-                prompt = f"""Analise o grafo de dependências e explique em português:
-1. Quais módulos dependem de quais.
-2. Quais são os mais críticos (mais importados).
-3. Quais são módulos folha.
-4. Exemplo real do que acontece se um módulo central for modificado.
-{montar_contexto_grafo()}"""
+                prompt = (
+                    'Analise o grafo de dependências e explique em português:\n'
+                    '1. Quais módulos dependem de quais.\n'
+                    '2. Quais são os mais críticos (mais importados).\n'
+                    '3. Quais são módulos folha.\n'
+                    '4. Exemplo real do que acontece se um módulo central for modificado.\n'
+                    f'{montar_contexto_grafo()}'
+                )
                 renderizar_resposta_ia(explicar_com_ia(prompt))
     else:
-        st.markdown("""
-        <div class="upload-prompt">
-            <img src="https://img.icons8.com/ios/100/30363D/hexagon.png"/>
-            <p class="upload-prompt-text">Carregue um arquivo para visualizar o grafo</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            '<div class="upload-prompt">'
+            '<img src="https://img.icons8.com/ios/100/30363D/hexagon.png"/>'
+            '<p class="upload-prompt-text">Carregue um arquivo para visualizar o grafo</p>'
+            '</div>', 
+            unsafe_allow_html=True
+        )
 
 
 # ── ABA 1: CICLOS ───────────────────────────────────────────
@@ -512,12 +529,14 @@ with tabs[1]:
             with st.spinner("Analisando..."):
                 ciclos     = resultado.get("ciclos", [])
                 ciclos_str = "\n".join([f"Ciclo {i+1}: " + " → ".join(c) for i, c in enumerate(ciclos)]) if ciclos else "Nenhum."
-                prompt = f"""Analise os ciclos de dependência e explique em português:
-1. O que cada ciclo significa na prática.
-2. Exemplo real do problema causado (ex: ImportError circular).
-3. Como resolver cada ciclo (refatoração concreta).
-{montar_contexto_grafo()}
-Ciclos: {ciclos_str}"""
+                prompt = (
+                    'Analise os ciclos de dependência e explique em português:\n'
+                    '1. O que cada ciclo significa na prática.\n'
+                    '2. Exemplo real do problema causado (ex: ImportError circular).\n'
+                    '3. Como resolver cada ciclo (refatoração concreta).\n'
+                    f'{montar_contexto_grafo()}\n'
+                    f'Ciclos: {ciclos_str}'
+                )
                 renderizar_resposta_ia(explicar_com_ia(prompt))
     else:
         st.info("Aguardando carregamento do projeto...")
@@ -540,10 +559,12 @@ with tabs[2]:
             arquivo = partes[-1]
             pasta = "/".join(partes[:-1]) + "/" if len(partes) > 1 else ""
 
-            return f"""<div class="ordem-card {status}">
-    <span class="ordem-idx">{i}</span>
-    <span><span class="ordem-pasta">{pasta}</span><span class="ordem-arquivo">{arquivo}</span></span>
-</div>"""
+            return (
+                f'<div class="ordem-card {status}">'
+                f'<span class="ordem-idx">{i}</span>'
+                f'<span><span class="ordem-pasta">{pasta}</span><span class="ordem-arquivo">{arquivo}</span></span>'
+                '</div>'
+            )
 
         if sucesso:
             st.success("Ordem completa de compilação:")
@@ -563,18 +584,21 @@ with tabs[2]:
         st.markdown("---")
         if st.button("Explicar com IA", key="ia_ordem"):
             with st.spinner("Analisando..."):
-                prompt = f"""Explique a ordenação topológica em português:
-1. O que significa a ordem gerada.
-2. Exemplo real do que acontece na ordem errada.
-3. Se houver bloqueados, como resolver.
-{montar_contexto_grafo()}
-Ordem: {' → '.join(ordem) if ordem else 'Nenhuma.'}
-Bloqueados: {', '.join(nao_processados) if nao_processados else 'Nenhum.'}"""
+                prompt = (
+                    'Explique a ordenação topológica em português:\n'
+                    '1. O que significa a ordem gerada.\n'
+                    '2. Exemplo real do que acontece na ordem errada.\n'
+                    '3. Se houver bloqueados, como resolver.\n'
+                    f'{montar_contexto_grafo()}\n'
+                    f'Ordem: {" → ".join(ordem) if ordem else "Nenhuma."}\n'
+                    f'Bloqueados: {", ".join(nao_processados) if nao_processados else "Nenhum."}'
+                )
                 renderizar_resposta_ia(explicar_com_ia(prompt))
     else:
         st.info("Aguardando carregamento do projeto...")
 
-# ── ABA 3: IMPACTO ─────────────────────
+
+# ── ABA 3: IMPACTO ──────────────────────────────────────────
 with tabs[3]:
     st.markdown(
         section_title(IMPACT_ICON, "Análise de Impacto"),
@@ -603,14 +627,16 @@ with tabs[3]:
             if analisar_ia:
                 with st.spinner("Analisando..."):
                     camadas_str = "\n".join([f"  Distância {i+1}: {', '.join(c)}" for i, c in enumerate(camadas)]) if camadas else "  Nenhum."
-                    prompt = f"""O desenvolvedor vai modificar "{mod}". Explique em português:
-1. Quais módulos serão afetados diretamente e por que.
-2. Quais serão afetados indiretamente.
-3. Exemplo real do que pode quebrar.
-4. Ordem recomendada para re-testar.
-{montar_contexto_grafo()}
-Módulo: {mod}
-Impacto:\n{camadas_str}"""
+                    prompt = (
+                        f'O desenvolvedor vai modificar "{mod}". Explique em português:\n'
+                        '1. Quais módulos serão afetados diretamente e por que.\n'
+                        '2. Quais serão afetados indiretamente.\n'
+                        '3. Exemplo real do que pode quebrar.\n'
+                        '4. Ordem recomendada para re-testar.\n'
+                        f'{montar_contexto_grafo()}\n'
+                        f'Módulo: {mod}\n'
+                        f'Impacto:\n{camadas_str}'
+                    )
                     renderizar_resposta_ia(explicar_com_ia(prompt))
     else:
         st.info("Aguardando carregamento do projeto...")
@@ -668,25 +694,3 @@ for msg in st.session_state.chat_history:
     chat_msgs_js += f'addMsg("{role}", `{safe}`);\n'
 
 drawer_open_js = "true" if st.session_state.chat_open else "false"
-
-#  ── Função que lê o arquivo HTML e injeta as variáveis ──────────────────────────────────────────
-def gerar_html_widget(chat_msgs_js="", drawer_open_js="false"):
-    caminho_html = os.path.join(os.path.dirname(__file__), "assets", "chat_widget.html")
-    
-    with open(caminho_html, "r", encoding="utf-8") as f:
-        html_content = f.read()
-    
-    if not chat_msgs_js:
-        chat_msgs_js = 'addMsgP(p, "ia", "Olá! Pergunte sobre módulos, ciclos ou impactos do projeto.");'
-    
-    html_content = html_content.replace("__CHAT_MSGS__", chat_msgs_js)
-    html_content = html_content.replace("__DRAWER_OPEN__", str(drawer_open_js).lower())
-    
-    return html_content
-
-INJECT_HTML = gerar_html_widget(
-    chat_msgs_js=chat_msgs_js, # Variável que você já tem no seu código
-    drawer_open_js=drawer_open_js # Variável que você já tem no seu código
-)
-
-components.html(INJECT_HTML, height=0)
