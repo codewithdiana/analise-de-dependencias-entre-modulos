@@ -37,7 +37,7 @@ Entenda como o projeto funciona na prática através de uma análise visual:
 ### Pré-requisitos
 
 * Python 3.8 ou superior instalado.
-* Uma chave de API gratuita do :contentReference[oaicite:0]{index=0} (opcional, apenas para os recursos de IA).
+* Uma chave de API gratuita do : https://console.groq.com/keys (opcional)
 
 ---
 
